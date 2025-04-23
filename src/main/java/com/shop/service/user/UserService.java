@@ -5,6 +5,7 @@ import com.shop.dto.user.UserResponseDto;
 import com.shop.entity.User;
 import com.shop.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +15,16 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();  // BCryptPasswordEncoder 사용
 
     public Long register(UserRequestDto dto) {
         validateDuplicateUsername(dto.getUsername());
 
+        String encodedPassword = passwordEncoder.encode(dto.getPassword()); // 비밀번호 암호화
+
         User user = new User(
                 dto.getUsername(),
-                dto.getPassword(), // 추후 BCrypt 암호화 예정
+                encodedPassword,  // 암호화된 비밀번호 저장
                 dto.getName(),
                 dto.getEmail()
         );
@@ -53,5 +57,13 @@ public class UserService {
                         user.getEmail()
                 ))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    }
+
+    // 로그인 기능 추가
+    public boolean validateUser(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+
+        return passwordEncoder.matches(password, user.getPassword());  // 비밀번호 일치 여부 확인
     }
 }
