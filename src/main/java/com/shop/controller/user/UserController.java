@@ -38,6 +38,12 @@ public class UserController {
         return ResponseEntity.ok(token);  // JWT 토큰 반환
     }
 
+    //테스트
+    @GetMapping("/me")
+    public ResponseEntity<String> getMyInfo() {
+        return ResponseEntity.ok("Hello, this is a protected resource.");
+    }
+
     // 전체 사용자 조회
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findAll() {
