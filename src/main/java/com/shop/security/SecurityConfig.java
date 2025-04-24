@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/signup", "/api/users/login").permitAll()
+                        .requestMatchers("/api/users/signup", "/api/users/login","/api/**").permitAll() // 개발단계이므로 전체허용 중
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
