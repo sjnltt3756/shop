@@ -34,4 +34,11 @@ public class User {
     public static User create(String username, String password, String name, String email) {
         return new User(username, password, name, email);
     }
+    // 유저 정보 수정
+    public void updateInfo(String password, String name, String email, String username) {
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.username = username;
+    }
 }

@@ -38,11 +38,11 @@ public class UserController {
         return ResponseEntity.ok(token);  // JWT 토큰 반환
     }
 
-    //테스트
-    @GetMapping("/me")
-    public ResponseEntity<String> getMyInfo() {
-        return ResponseEntity.ok("Hello, this is a protected resource.");
-    }
+//    //테스트
+//    @GetMapping("/me")
+//    public ResponseEntity<String> getMyInfo() {
+//        return ResponseEntity.ok("Hello, this is a protected resource.");
+//    }
 
     // 전체 사용자 조회
     @GetMapping
@@ -54,5 +54,17 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
+    }
+
+    // 유저 정보 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDto> update(@PathVariable Long id, @RequestBody UserRequestDto dto) {
+        return ResponseEntity.ok(userService.update(id, dto));
+    }
+    // 유저 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
