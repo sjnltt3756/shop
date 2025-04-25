@@ -1,6 +1,8 @@
 package com.shop.entity.user;
 
 import com.shop.entity.cart.Cart;
+import com.shop.entity.order.Order;
+import com.shop.entity.order.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,6 +30,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
 
     // 생성자 (필수 필드 중심)
     public User(String username, String password, String name, String email) {

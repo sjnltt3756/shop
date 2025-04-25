@@ -2,17 +2,16 @@ package com.shop.entity.product;
 
 import com.shop.entity.cart.Cart;
 import com.shop.entity.category.Category;
+import com.shop.entity.order.OrderItem;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Product {
 
@@ -32,6 +31,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     // 정적 팩토리 메서드
     public static Product create(String name, String description, int price, int stockQuantity, String imageUrl, Category category) {
