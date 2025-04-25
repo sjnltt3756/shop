@@ -1,10 +1,14 @@
 package com.shop.entity.product;
 
+import com.shop.entity.cart.Cart;
 import com.shop.entity.category.Category;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,6 +29,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")  // 외래 키를 `category_id`로 설정
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();
 
     // 정적 팩토리 메서드
     public static Product create(String name, String description, int price, int stockQuantity, String imageUrl, Category category) {

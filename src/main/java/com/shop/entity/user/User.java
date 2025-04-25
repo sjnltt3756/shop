@@ -1,7 +1,11 @@
 package com.shop.entity.user;
 
+import com.shop.entity.cart.Cart;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +25,9 @@ public class User {
 
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();
 
     // 생성자 (필수 필드 중심)
     public User(String username, String password, String name, String email) {
