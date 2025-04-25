@@ -2,16 +2,14 @@ package com.shop.service.user;
 
 import com.shop.dto.user.UserRequestDto;
 import com.shop.dto.user.UserResponseDto;
-import com.shop.entity.User;
+import com.shop.entity.user.User;
 import com.shop.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

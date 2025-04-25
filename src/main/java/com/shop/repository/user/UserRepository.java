@@ -1,6 +1,6 @@
 package com.shop.repository.user;
 
-import com.shop.entity.User;
+import com.shop.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
