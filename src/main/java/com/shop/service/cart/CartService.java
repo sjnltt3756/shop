@@ -22,13 +22,10 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    // 장바구니 추가 or 수량 업데이트
     @Transactional
     public Long addOrUpdate(Long userId, CartRequestDto dto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        User user = findUser(userId);
+        Product product = findProduct(dto.getProductId());
 
         Cart cart = cartRepository.findByUserIdAndProductId(userId, dto.getProductId())
                 .map(c -> {
@@ -40,7 +37,6 @@ public class CartService {
         return cartRepository.save(cart).getId();
     }
 
-    // 장바구니 조회
     public List<CartResponseDto> findByUser(Long userId) {
         return cartRepository.findByUserId(userId).stream()
                 .map(cart -> new CartResponseDto(
@@ -51,8 +47,17 @@ public class CartService {
                 )).toList();
     }
 
-    // 장바구니 항목 삭제
     public void delete(Long cartId) {
         cartRepository.deleteById(cartId);
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    }
+
+    private Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
     }
 }

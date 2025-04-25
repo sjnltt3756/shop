@@ -16,27 +16,27 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();  // BCryptPasswordEncoder 사용
-
-    public Long register(UserRequestDto dto) {
-        validateDuplicateUsername(dto.getUsername());
-
-        String encodedPassword = passwordEncoder.encode(dto.getPassword()); // 비밀번호 암호화
-
-        User user = new User(
-                dto.getUsername(),
-                encodedPassword,  // 암호화된 비밀번호 저장
-                dto.getName(),
-                dto.getEmail()
-        );
-
-        return userRepository.save(user).getId();
-    }
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private void validateDuplicateUsername(String username) {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
+    }
+
+    public Long register(UserRequestDto dto) {
+        validateDuplicateUsername(dto.getUsername());
+
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+
+        User user = new User(
+                dto.getUsername(),
+                encodedPassword,
+                dto.getName(),
+                dto.getEmail()
+        );
+
+        return userRepository.save(user).getId();
     }
 
     public List<UserResponseDto> findAll() {
@@ -60,27 +60,24 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 
-    // 로그인 기능 추가
     public boolean validateUser(String username, String password) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
 
-        return passwordEncoder.matches(password, user.getPassword());  // 비밀번호 일치 여부 확인
+        return passwordEncoder.matches(password, user.getPassword());
     }
-    // 유저 정보 업데이트
+
     @Transactional
     public UserResponseDto update(Long id, UserRequestDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        // 자기 자신이 아닌 다른 사용자와 username이 중복되는지 확인
         userRepository.findByUsername(dto.getUsername())
                 .filter(existing -> !existing.getId().equals(id))
                 .ifPresent(existing -> {
                     throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
                 });
 
-        // updateInfo 메서드로 수정
         user.updateInfo(
                 passwordEncoder.encode(dto.getPassword()),
                 dto.getName(),
@@ -95,7 +92,7 @@ public class UserService {
                 user.getEmail()
         );
     }
-    // 유저 삭제
+
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
@@ -108,4 +105,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."))
                 .getId();
     }
+
+
 }

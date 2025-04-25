@@ -19,11 +19,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    // 상품 등록
     public Long create(ProductRequestDto dto, Long categoryId) {
-        // 카테고리 찾기
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        Category category = findCategory(categoryId);
 
         Product product = Product.create(
                 dto.getName(),
@@ -31,35 +28,25 @@ public class ProductService {
                 dto.getPrice(),
                 dto.getStockQuantity(),
                 dto.getImageUrl(),
-                category // 카테고리 연관
+                category
         );
         return productRepository.save(product).getId();
     }
 
-    // 전체 조회
     public List<ProductResponseDto> findAll() {
         return productRepository.findAll().stream()
                 .map(this::toDto)
                 .toList();
     }
 
-    // 단건 조회
     public ProductResponseDto findById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-
-        return toDto(product);
+        return toDto(findProduct(id));
     }
 
-    // 수정
     @Transactional
     public ProductResponseDto update(Long id, ProductRequestDto dto, Long categoryId) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-
-        // 카테고리 업데이트
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        Product product = findProduct(id);
+        Category category = findCategory(categoryId);
 
         product.update(
                 dto.getName(),
@@ -67,13 +54,12 @@ public class ProductService {
                 dto.getPrice(),
                 dto.getStockQuantity(),
                 dto.getImageUrl(),
-                category // 카테고리 연관
+                category
         );
 
         return toDto(product);
     }
 
-    // 상품 삭제
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
             throw new IllegalArgumentException("존재하지 않는 상품입니다.");
@@ -81,7 +67,6 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    // 상품 정보를 DTO로 변환
     private ProductResponseDto toDto(Product product) {
         return new ProductResponseDto(
                 product.getId(),
@@ -90,7 +75,17 @@ public class ProductService {
                 product.getPrice(),
                 product.getStockQuantity(),
                 product.getImageUrl(),
-                product.getCategory().getName() // 카테고리 이름 포함
+                product.getCategory().getName()
         );
+    }
+
+    private Product findProduct(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+    }
+
+    private Category findCategory(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
     }
 }
