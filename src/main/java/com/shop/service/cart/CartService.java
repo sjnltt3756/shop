@@ -22,6 +22,9 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
+    /**
+     * 장바구니 추가 or 수량 업데이트
+     */
     @Transactional
     public Long addOrUpdate(Long userId, CartRequestDto dto) {
         User user = findUser(userId);
@@ -37,6 +40,9 @@ public class CartService {
         return cartRepository.save(cart).getId();
     }
 
+    /**
+     * 장바구니 조회
+     */
     public List<CartResponseDto> findByUser(Long userId) {
         return cartRepository.findByUserId(userId).stream()
                 .map(cart -> new CartResponseDto(
@@ -47,6 +53,9 @@ public class CartService {
                 )).toList();
     }
 
+    /**
+     * 장바구니 항목 삭제
+     */
     public void delete(Long cartId) {
         cartRepository.deleteById(cartId);
     }

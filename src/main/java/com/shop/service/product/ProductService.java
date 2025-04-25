@@ -19,6 +19,9 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+    /**
+     * 상품 등록
+     */
     public Long create(ProductRequestDto dto, Long categoryId) {
         Category category = findCategory(categoryId);
 
@@ -33,16 +36,25 @@ public class ProductService {
         return productRepository.save(product).getId();
     }
 
+    /**
+     * 전체 상품 조회
+     */
     public List<ProductResponseDto> findAll() {
         return productRepository.findAll().stream()
                 .map(this::toDto)
                 .toList();
     }
 
+    /**
+     * 단건 상품 조회
+     */
     public ProductResponseDto findById(Long id) {
         return toDto(findProduct(id));
     }
 
+    /**
+     * 상품 수정
+     */
     @Transactional
     public ProductResponseDto update(Long id, ProductRequestDto dto, Long categoryId) {
         Product product = findProduct(id);
@@ -60,6 +72,9 @@ public class ProductService {
         return toDto(product);
     }
 
+    /**
+     * 상품 삭제
+     */
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
             throw new IllegalArgumentException("존재하지 않는 상품입니다.");
