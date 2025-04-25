@@ -102,4 +102,10 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public Long findIdByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."))
+                .getId();
+    }
 }
