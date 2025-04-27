@@ -1,8 +1,12 @@
 package com.shop.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shop.entity.cart.Cart;
 import com.shop.entity.order.Order;
 import com.shop.entity.order.OrderItem;
+import com.shop.entity.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +17,7 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonIgnoreProperties({"wishLists"})  // 순환 참조를 방지
 public class User {
 
     @Id
@@ -33,6 +38,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WishList> wishLists = new ArrayList<>();
 
     // 생성자 (필수 필드 중심)
     public User(String username, String password, String name, String email) {

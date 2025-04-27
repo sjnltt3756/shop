@@ -1,8 +1,12 @@
 package com.shop.entity.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shop.entity.cart.Cart;
 import com.shop.entity.category.Category;
 import com.shop.entity.order.OrderItem;
+import com.shop.entity.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties({"wishLists"})  // 순환 참조를 방지
 public class Product {
 
     @Id
@@ -34,6 +39,10 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore  // 순환 참조 방지
+    private List<WishList> wishLists = new ArrayList<>();
 
     // 정적 팩토리 메서드
     public static Product create(String name, String description, int price, int stockQuantity, String imageUrl, Category category) {
