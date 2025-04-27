@@ -36,6 +36,7 @@ public class OrderService {
         orderItems.forEach(orderItem -> orderItem.setOrder(order)); // 양방향 관계 설정
 
         Order savedOrder = orderRepository.save(order);
+        order.updateStatus("COMPLETE");
         return savedOrder.getId();  // 주문 번호만 반환
     }
 
@@ -47,6 +48,37 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
         return toDto(order);
+    }
+
+    /**
+     * 나의 주문 목록 조회
+     */
+    @Transactional(readOnly = true)
+    public List<OrderResponseDto> findMyOrders(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+
+        return orders.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    /**
+     * 주문 취소
+     */
+    @Transactional
+    public void cancelOrder(Long orderId, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+
+        if (!order.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("본인의 주문만 취소할 수 있습니다.");
+        }
+
+        if ("CANCELED".equalsIgnoreCase(order.getStatus())) {
+            throw new IllegalStateException("이미 취소된 주문입니다.");
+        }
+
+        order.updateStatus("CANCELED");
     }
 
     /**

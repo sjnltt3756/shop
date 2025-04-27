@@ -38,6 +38,10 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
+    public void updateStatus(String status) {
+        this.status = status;
+    }
+
     public static Order create(User user, List<OrderItem> orderItems, String status, int totalAmount) {
         return new Order(user, orderItems, status, totalAmount);
     }

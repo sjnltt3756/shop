@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
@@ -47,5 +49,27 @@ public class OrderController {
         }
 
         return ResponseEntity.ok(order);
+    }
+
+    // 나의 주문 목록 조회
+    @GetMapping("/my")
+    public ResponseEntity<List<OrderResponseDto>> findMyOrders(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = JwtUtil.extractUsername(token);
+        Long userId = userService.findIdByUsername(username);
+
+        return ResponseEntity.ok(orderService.findMyOrders(userId));
+    }
+
+    // 주문 취소
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<Void> cancelOrder(@RequestHeader("Authorization") String authHeader,
+                                            @PathVariable Long orderId) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = JwtUtil.extractUsername(token);
+        Long userId = userService.findIdByUsername(username);
+
+        orderService.cancelOrder(orderId, userId);
+        return ResponseEntity.noContent().build();
     }
 }
