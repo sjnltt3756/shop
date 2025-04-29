@@ -18,14 +18,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     /**
-     * 카테고리 등록
-     */
-    public Long create(CategoryRequestDto dto) {
-        Category category = Category.create(dto.getName());
-        return categoryRepository.save(category).getId();
-    }
-
-    /**
      * 전체 카테고리 조회
      */
     public List<CategoryResponseDto> findAll() {
@@ -40,26 +32,6 @@ public class CategoryService {
     public CategoryResponseDto findById(Long id) {
         Category category = findCategory(id);
         return new CategoryResponseDto(category.getId(), category.getName());
-    }
-
-    /**
-     * 카테고리 수정
-     */
-    @Transactional
-    public CategoryResponseDto update(Long id, CategoryRequestDto dto) {
-        Category category = findCategory(id);
-        category.update(dto.getName());
-        return new CategoryResponseDto(category.getId(), category.getName());
-    }
-
-    /**
-     * 카테고리 삭제
-     */
-    public void delete(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new CategoryNotFoundException("존재하지 않는 카테고리입니다.");
-        }
-        categoryRepository.deleteById(id);
     }
 
     private Category findCategory(Long id) {

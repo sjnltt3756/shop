@@ -1,6 +1,5 @@
 package com.shop.controller.category;
 
-import com.shop.dto.category.CategoryRequestDto;
 import com.shop.dto.category.CategoryResponseDto;
 import com.shop.service.category.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +15,6 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    /**
-     * 카테고리 등록
-     */
-    @PostMapping
-    public ResponseEntity<Long> create(@RequestBody CategoryRequestDto dto) {
-        Long id = categoryService.create(dto);
-        return ResponseEntity.ok(id);
-    }
 
     /**
      * 전체 카테고리 조회
@@ -39,22 +30,5 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
-    }
-
-    /**
-     * 카테고리 수정
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponseDto> update(@PathVariable Long id, @RequestBody CategoryRequestDto dto) {
-        return ResponseEntity.ok(categoryService.update(id, dto));
-    }
-
-    /**
-     * 카테고리 삭제
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        categoryService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

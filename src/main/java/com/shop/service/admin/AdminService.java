@@ -1,30 +1,26 @@
 package com.shop.service.admin;
 
+import com.shop.dto.category.CategoryRequestDto;
+import com.shop.dto.category.CategoryResponseDto;
 import com.shop.dto.order.OrderResponseDto;
 import com.shop.dto.product.ProductRequestDto;
 import com.shop.dto.product.ProductResponseDto;
 import com.shop.dto.review.ReviewResponseDto;
 import com.shop.dto.user.UserResponseDto;
-import com.shop.entity.cart.Cart;
 import com.shop.entity.category.Category;
-import com.shop.entity.order.Order;
 import com.shop.entity.product.Product;
-import com.shop.entity.review.Review;
-import com.shop.entity.user.User;
-import com.shop.entity.wishlist.WishList;
-import com.shop.repository.cart.CartRepository;
+import com.shop.exception.category.CategoryNotFoundException;
+import com.shop.exception.product.ProductNotFoundException;
 import com.shop.repository.category.CategoryRepository;
 import com.shop.repository.order.OrderRepository;
 import com.shop.repository.product.ProductRepository;
 import com.shop.repository.review.ReviewRepository;
 import com.shop.repository.user.UserRepository;
-import com.shop.repository.wishlist.WishListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +31,6 @@ public class AdminService {
     private final CategoryRepository categoryRepository;
     private final OrderRepository orderRepository;
     private final ReviewRepository reviewRepository;
-    private final WishListRepository wishListRepository;
-    private final CartRepository cartRepository;
 
     // 👤 전체 회원 조회
     public List<UserResponseDto> getAllUsers() {
@@ -54,7 +48,54 @@ public class AdminService {
         userRepository.deleteById(id);
     }
 
-    // 📦 전체 상품 조회
+    // 📦 상품 등록
+    @Transactional
+    public Long createProduct(ProductRequestDto dto, Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리입니다."));
+
+        Product product = Product.create(
+                dto.getName(),
+                dto.getDescription(),
+                dto.getPrice(),
+                dto.getStockQuantity(),
+                dto.getImageUrl(),
+                category
+        );
+
+        return productRepository.save(product).getId();
+    }
+
+    // 📦 상품 수정
+    @Transactional
+    public ProductResponseDto updateProduct(Long id, ProductRequestDto dto, Long categoryId) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리입니다."));
+
+        product.update(
+                dto.getName(),
+                dto.getDescription(),
+                dto.getPrice(),
+                dto.getStockQuantity(),
+                dto.getImageUrl(),
+                category
+        );
+
+        return new ProductResponseDto(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getStockQuantity(),
+                product.getImageUrl(),
+                product.getCategory().getName()
+        );
+    }
+
+    // 📦 상품 조회
     public List<ProductResponseDto> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(product -> new ProductResponseDto(
@@ -70,20 +111,36 @@ public class AdminService {
 
     // 📦 상품 삭제
     public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException("존재하지 않는 상품입니다.");
+        }
         productRepository.deleteById(id);
     }
 
-    // 🗂️ 전체 카테고리 조회
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    // 🗂️ 카테고리 등록
+    public Long createCategory(CategoryRequestDto dto) {
+        Category category = Category.create(dto.getName());
+        return categoryRepository.save(category).getId();
+    }
+
+    // 🗂️ 카테고리 수정
+    @Transactional
+    public CategoryResponseDto updateCategory(Long id, CategoryRequestDto dto) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리입니다."));
+        category.update(dto.getName());
+        return new CategoryResponseDto(category.getId(), category.getName());
     }
 
     // 🗂️ 카테고리 삭제
     public void deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new CategoryNotFoundException("존재하지 않는 카테고리입니다.");
+        }
         categoryRepository.deleteById(id);
     }
 
-    // 🛒 전체 주문 조회
+    // 🛒 주문 조회
     public List<OrderResponseDto> getAllOrders() {
         return orderRepository.findAll().stream()
                 .map(order -> new OrderResponseDto(
@@ -105,7 +162,7 @@ public class AdminService {
         orderRepository.deleteById(orderId);
     }
 
-    // ✍️ 리뷰 전체 조회
+    // ✍️ 리뷰 조회
     public List<ReviewResponseDto> getAllReviews() {
         return reviewRepository.findAll().stream()
                 .map(review -> new ReviewResponseDto(

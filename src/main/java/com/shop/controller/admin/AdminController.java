@@ -1,6 +1,9 @@
 package com.shop.controller.admin;
 
+import com.shop.dto.category.CategoryRequestDto;
+import com.shop.dto.category.CategoryResponseDto;
 import com.shop.dto.order.OrderResponseDto;
+import com.shop.dto.product.ProductRequestDto;
 import com.shop.dto.product.ProductResponseDto;
 import com.shop.dto.review.ReviewResponseDto;
 import com.shop.dto.user.UserResponseDto;
@@ -16,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')") // 전체 컨트롤러에 관리자 권한 제한
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final AdminService adminService;
@@ -34,10 +37,18 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // 📦 전체 상품 조회
-    @GetMapping("/products")
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(adminService.getAllProducts());
+    // 📦 상품 등록
+    @PostMapping("/products")
+    public ResponseEntity<Long> createProduct(@RequestBody ProductRequestDto dto, @RequestParam Long categoryId) {
+        Long productId = adminService.createProduct(dto, categoryId);
+        return ResponseEntity.ok(productId);
+    }
+
+    // 📦 상품 수정
+    @PutMapping("/products/{id}")
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDto dto, @RequestParam Long categoryId) {
+        ProductResponseDto updatedProduct = adminService.updateProduct(id, dto, categoryId);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     // 📦 상품 삭제
@@ -47,10 +58,16 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // 🗂️ 전체 카테고리 조회
-    @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        return ResponseEntity.ok(adminService.getAllCategories());
+    // 🗂️ 카테고리 등록
+    @PostMapping("/categories")
+    public ResponseEntity<Long> createCategory(@RequestBody CategoryRequestDto dto) {
+        return ResponseEntity.ok(adminService.createCategory(dto));
+    }
+
+    // 🗂️ 카테고리 수정
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<CategoryResponseDto> updateCategory(@PathVariable Long id, @RequestBody CategoryRequestDto dto) {
+        return ResponseEntity.ok(adminService.updateCategory(id, dto));
     }
 
     // 🗂️ 카테고리 삭제
