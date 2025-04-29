@@ -71,7 +71,7 @@ public class ReviewController {
 
     private Long extractUserId(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
-        String username = JwtUtil.extractUsername(token);
+        String username = JwtUtil.extractRole(token);
         return userService.findIdByUsername(username);
     }
 }

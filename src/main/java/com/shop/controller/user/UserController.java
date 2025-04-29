@@ -1,7 +1,10 @@
 package com.shop.controller.user;
 
+import com.shop.dto.user.LoginRequestDto;
 import com.shop.dto.user.UserRequestDto;
 import com.shop.dto.user.UserResponseDto;
+import com.shop.entity.user.User;
+import com.shop.exception.user.UserNotFoundException;
 import com.shop.service.user.UserService;
 import com.shop.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +30,12 @@ public class UserController {
     }
 
     /**
-     * 로그인
+     * 로그인 - 토큰 발급
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserRequestDto dto) {
-        boolean isValidUser = userService.validateUser(dto.getUsername(), dto.getPassword());
-
-        if (!isValidUser) {
-            return ResponseEntity.status(401).body("아이디 또는 비밀번호가 잘못되었습니다.");
-        }
-
-        // JWT 토큰 생성
-        String token = JwtUtil.generateToken(dto.getUsername());
-        return ResponseEntity.ok(token);  // JWT 토큰 반환
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto dto) {
+        String token = userService.login(dto);
+        return ResponseEntity.ok(token);
     }
 
 //    //테스트
@@ -79,5 +75,13 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * 관리자 회원가입
+     */
+    @PostMapping("/signup/admin")
+    public ResponseEntity<Long> registerAdmin(@RequestBody UserRequestDto dto) {
+        return ResponseEntity.ok(userService.registerAdmin(dto));
     }
 }
