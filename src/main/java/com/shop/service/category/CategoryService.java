@@ -3,6 +3,7 @@ package com.shop.service.category;
 import com.shop.dto.category.CategoryRequestDto;
 import com.shop.dto.category.CategoryResponseDto;
 import com.shop.entity.category.Category;
+import com.shop.exception.category.CategoryNotFoundException;
 import com.shop.repository.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,13 +57,13 @@ public class CategoryService {
      */
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new IllegalArgumentException("존재하지 않는 카테고리입니다.");
+            throw new CategoryNotFoundException("존재하지 않는 카테고리입니다.");
         }
         categoryRepository.deleteById(id);
     }
 
     private Category findCategory(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+                .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리입니다."));
     }
 }

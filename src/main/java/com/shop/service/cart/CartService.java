@@ -5,6 +5,8 @@ import com.shop.dto.cart.CartResponseDto;
 import com.shop.entity.cart.Cart;
 import com.shop.entity.product.Product;
 import com.shop.entity.user.User;
+import com.shop.exception.product.ProductNotFoundException;
+import com.shop.exception.user.UserNotFoundException;
 import com.shop.repository.cart.CartRepository;
 import com.shop.repository.product.ProductRepository;
 import com.shop.repository.user.UserRepository;
@@ -62,11 +64,11 @@ public class CartService {
 
     private User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
     }
 
     private Product findProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
     }
 }

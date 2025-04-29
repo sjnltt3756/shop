@@ -5,6 +5,9 @@ import com.shop.entity.order.Order;
 import com.shop.entity.order.OrderItem;
 import com.shop.entity.product.Product;
 import com.shop.entity.user.User;
+import com.shop.exception.order.OrderNotFoundException;
+import com.shop.exception.product.ProductNotFoundException;
+import com.shop.exception.user.UserNotFoundException;
 import com.shop.repository.order.OrderRepository;
 import com.shop.repository.product.ProductRepository;
 import com.shop.repository.user.UserRepository;
@@ -33,11 +36,11 @@ public class OrderService {
         int totalAmount = calculateTotal(orderItems);
 
         Order order = Order.create(user, orderItems, dto.getStatus(), totalAmount);
-        orderItems.forEach(orderItem -> orderItem.setOrder(order)); // 양방향 관계 설정
+        orderItems.forEach(orderItem -> orderItem.setOrder(order));
 
         Order savedOrder = orderRepository.save(order);
         order.updateStatus("COMPLETE");
-        return savedOrder.getId();  // 주문 번호만 반환
+        return savedOrder.getId();
     }
 
     /**
@@ -46,7 +49,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponseDto findOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+                .orElseThrow(() -> new OrderNotFoundException("존재하지 않는 주문입니다."));
         return toDto(order);
     }
 
@@ -56,7 +59,6 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderResponseDto> findMyOrders(Long userId) {
         List<Order> orders = orderRepository.findByUserId(userId);
-
         return orders.stream()
                 .map(this::toDto)
                 .toList();
@@ -68,7 +70,7 @@ public class OrderService {
     @Transactional
     public void cancelOrder(Long orderId, Long userId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+                .orElseThrow(() -> new OrderNotFoundException("존재하지 않는 주문입니다."));
 
         if (!order.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("본인의 주문만 취소할 수 있습니다.");
@@ -86,7 +88,7 @@ public class OrderService {
      */
     private User findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
     }
 
     /**
@@ -97,7 +99,7 @@ public class OrderService {
 
         for (OrderItemRequestDto itemDto : dto.getOrderItems()) {
             Product product = productRepository.findById(itemDto.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                    .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
 
             OrderItem orderItem = OrderItem.create(null, product, itemDto.getQuantity(), itemDto.getPrice());
             orderItems.add(orderItem);

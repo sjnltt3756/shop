@@ -4,6 +4,8 @@ import com.shop.dto.product.ProductRequestDto;
 import com.shop.dto.product.ProductResponseDto;
 import com.shop.entity.product.Product;
 import com.shop.entity.category.Category;
+import com.shop.exception.category.CategoryNotFoundException;
+import com.shop.exception.product.ProductNotFoundException;
 import com.shop.repository.product.ProductRepository;
 import com.shop.repository.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +79,7 @@ public class ProductService {
      */
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
-            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+            throw new ProductNotFoundException("존재하지 않는 상품입니다.");
         }
         productRepository.deleteById(id);
     }
@@ -96,11 +98,11 @@ public class ProductService {
 
     private Product findProduct(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
     }
 
     private Category findCategory(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+                .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리입니다."));
     }
 }

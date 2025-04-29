@@ -5,6 +5,9 @@ import com.shop.dto.review.ReviewResponseDto;
 import com.shop.entity.product.Product;
 import com.shop.entity.review.Review;
 import com.shop.entity.user.User;
+import com.shop.exception.product.ProductNotFoundException;
+import com.shop.exception.review.ReviewNotFoundException;
+import com.shop.exception.user.UserNotFoundException;
 import com.shop.repository.product.ProductRepository;
 import com.shop.repository.review.ReviewRepository;
 import com.shop.repository.user.UserRepository;
@@ -30,9 +33,9 @@ public class ReviewService {
     @Transactional
     public Long create(Long userId, ReviewRequestDto dto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new ProductNotFoundException("상품이 존재하지 않습니다."));
 
         Review review = Review.create(user, product, dto.getContent(), dto.getRating());
         return reviewRepository.save(review).getId();
@@ -87,7 +90,7 @@ public class ReviewService {
 
     private Review getReviewByIdAndUser(Long reviewId, Long userId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+                .orElseThrow(() -> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
         if (!review.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("본인의 리뷰만 수정/삭제할 수 있습니다.");
         }
