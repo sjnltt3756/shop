@@ -1,6 +1,5 @@
 package com.shop.entity.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shop.entity.cart.Cart;
 import com.shop.entity.order.Order;
 import com.shop.entity.review.Review;
@@ -17,7 +16,6 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@JsonIgnoreProperties({"wishLists"}) // 순환 참조 방지 (가능하면 DTO로 대체 권장)
 public class User {
 
     @Id

@@ -25,7 +25,6 @@ public class WishList {
     @JsonManagedReference  // 순환 참조 허용
     private Product product;
 
-    // Constructor, Getter, Setter, and Static Factory Method
     public static WishList create(User user, Product product) {
         WishList wishList = new WishList();
         wishList.user = user;

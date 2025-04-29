@@ -1,7 +1,6 @@
 package com.shop.service.admin;
 
 import com.shop.dto.user.UserResponseDto;
-import com.shop.entity.user.User;
 import com.shop.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

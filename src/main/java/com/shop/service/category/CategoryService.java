@@ -1,13 +1,11 @@
 package com.shop.service.category;
 
-import com.shop.dto.category.CategoryRequestDto;
 import com.shop.dto.category.CategoryResponseDto;
 import com.shop.entity.category.Category;
 import com.shop.exception.category.CategoryNotFoundException;
 import com.shop.repository.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

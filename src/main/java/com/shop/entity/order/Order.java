@@ -1,7 +1,5 @@
 package com.shop.entity.order;
 
-import com.shop.entity.cart.Cart;
-import com.shop.entity.product.Product;
 import com.shop.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;

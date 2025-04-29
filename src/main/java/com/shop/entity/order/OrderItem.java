@@ -1,12 +1,10 @@
 package com.shop.entity.order;
 
 import com.shop.entity.product.Product;
-import com.shop.entity.order.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter

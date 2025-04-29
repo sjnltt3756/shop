@@ -1,7 +1,6 @@
 package com.shop.controller.wishlist;
 
 import com.shop.dto.wishlist.WishListResponseDto;
-import com.shop.entity.product.Product;
 import com.shop.security.JwtUtil;
 import com.shop.service.user.UserService;
 import com.shop.service.wishlist.WishListService;

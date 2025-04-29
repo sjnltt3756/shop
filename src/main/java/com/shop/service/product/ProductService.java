@@ -15,14 +15,18 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    // 📦 상품 조회
+    /**
+     * 상품 조회
+     */
     public List<ProductResponseDto> findAll() {
         return productRepository.findAll().stream()
                 .map(this::toDto)
                 .toList();
     }
 
-    // 📦 단건 상품 조회
+    /**
+     * 단건 상품 조회
+     */
     public ProductResponseDto findById(Long id) {
         return toDto(findProduct(id));
     }
