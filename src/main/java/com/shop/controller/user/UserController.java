@@ -17,14 +17,18 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입
+    /**
+     * 회원가입
+     */
     @PostMapping("/signup")
     public ResponseEntity<Long> register(@RequestBody UserRequestDto dto) {
         Long userId = userService.register(dto);
         return ResponseEntity.ok(userId);
     }
 
-    // 로그인
+    /**
+     * 로그인
+     */
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserRequestDto dto) {
         boolean isValidUser = userService.validateUser(dto.getUsername(), dto.getPassword());
@@ -44,24 +48,33 @@ public class UserController {
 //        return ResponseEntity.ok("Hello, this is a protected resource.");
 //    }
 
-    // 전체 사용자 조회
+    /**
+     * 전체 사용자 조회
+     */
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }
 
-    // ID로 사용자 조회
+    /**
+     * ID로 사용자 조회
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    // 유저 정보 수정
+    /**
+     * 유저 정보 수정
+     */
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> update(@PathVariable Long id, @RequestBody UserRequestDto dto) {
         return ResponseEntity.ok(userService.update(id, dto));
     }
-    // 유저 삭제
+
+    /**
+     * 유저 정보 삭제
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);

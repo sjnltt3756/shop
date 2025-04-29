@@ -19,7 +19,9 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
 
-    // 주문 생성
+    /**
+     * 주문 생성
+     */
     @PostMapping
     public ResponseEntity<Long> createOrder(@RequestHeader("Authorization") String authHeader,
                                             @RequestBody OrderRequestDto dto) {
@@ -31,7 +33,9 @@ public class OrderController {
         return ResponseEntity.ok(orderId);
     }
 
-    // 주문 조회
+    /**
+     * 주문 조회
+     */
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponseDto> findOrderById(@RequestHeader("Authorization") String authHeader,
                                                           @PathVariable Long orderId) {
@@ -51,7 +55,9 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    // 나의 주문 목록 조회
+    /**
+     * 주문 목록 조회
+     */
     @GetMapping("/my")
     public ResponseEntity<List<OrderResponseDto>> findMyOrders(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -61,7 +67,9 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findMyOrders(userId));
     }
 
-    // 주문 취소
+    /**
+     * 주문 취소
+     */
     @PutMapping("/{orderId}/cancel")
     public ResponseEntity<Void> cancelOrder(@RequestHeader("Authorization") String authHeader,
                                             @PathVariable Long orderId) {

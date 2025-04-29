@@ -19,7 +19,9 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final UserService userService;
 
-    // 리뷰 작성
+    /**
+     * 리뷰 작성
+     */
     @PostMapping
     public ResponseEntity<Long> create(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody ReviewRequestDto dto) {
@@ -27,7 +29,9 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.create(userId, dto));
     }
 
-    // 리뷰 수정
+    /**
+     * 리뷰 수정
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@RequestHeader("Authorization") String authHeader,
                                        @PathVariable Long id,
@@ -37,7 +41,9 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    // 리뷰 삭제
+    /**
+     * 리뷰 삭제
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@RequestHeader("Authorization") String authHeader,
                                        @PathVariable Long id) {
@@ -46,13 +52,17 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
-    // 상품 리뷰 조회
+    /**
+     * 상품 리뷰 조회
+     */
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ReviewResponseDto>> findByProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(reviewService.findByProduct(productId));
     }
 
-    // 본인 리뷰 조회
+    /**
+     * 본인 리뷰 조회
+     */
     @GetMapping("/me")
     public ResponseEntity<List<ReviewResponseDto>> findByUser(@RequestHeader("Authorization") String authHeader) {
         Long userId = extractUserId(authHeader);

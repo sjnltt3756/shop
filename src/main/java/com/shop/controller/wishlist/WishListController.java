@@ -18,7 +18,9 @@ public class WishListController {
     private final WishListService wishListService;
     private final UserService userService;
 
-    // 찜 목록 추가
+    /**
+     * 찜 목록 추가
+     */
     @PostMapping
     public ResponseEntity<Long> addToWishList(@RequestHeader("Authorization") String authHeader,
                                               @RequestParam Long productId) {
@@ -30,7 +32,9 @@ public class WishListController {
         return ResponseEntity.ok(wishListId);
     }
 
-    // 찜 목록 조회
+    /**
+     * 찜 목록 조회
+     */
     @GetMapping
     public ResponseEntity<List<Product>> getWishList(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -40,7 +44,9 @@ public class WishListController {
         return ResponseEntity.ok(wishListService.getWishList(userId));
     }
 
-    // 찜 목록에서 상품 삭제
+    /**
+     * 찜 목록에서 상품 삭제
+     */
     @DeleteMapping
     public ResponseEntity<Void> removeFromWishList(@RequestHeader("Authorization") String authHeader,
                                                    @RequestParam Long productId) {

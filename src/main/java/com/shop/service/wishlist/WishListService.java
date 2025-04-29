@@ -22,7 +22,9 @@ public class WishListService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    // 찜 목록 추가
+    /**
+     * 찜 목록 추가
+     */
     @Transactional
     public Long addToWishList(Long userId, Long productId) {
         User user = userRepository.findById(userId)
@@ -40,14 +42,18 @@ public class WishListService {
         return wishListRepository.save(wishList).getId();
     }
 
-    // 찜 목록 조회
+    /**
+     * 찜 목록 조회
+     */
     public List<Product> getWishList(Long userId) {
         return wishListRepository.findByUserId(userId).stream()
                 .map(w -> w.getProduct())
                 .toList();
     }
 
-    // 찜 목록 삭제
+    /**
+     * 찜 목록 삭제
+     */
     public void removeFromWishList(Long userId, Long productId) {
         WishList wishList = wishListRepository.findByUserIdAndProductId(userId, productId)
                 .orElseThrow(() -> new IllegalArgumentException("찜 목록에 없는 상품입니다."));
