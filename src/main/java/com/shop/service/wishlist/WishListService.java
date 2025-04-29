@@ -1,5 +1,6 @@
 package com.shop.service.wishlist;
 
+import com.shop.dto.wishlist.WishListResponseDto;
 import com.shop.entity.wishlist.WishList;
 import com.shop.entity.product.Product;
 import com.shop.entity.user.User;
@@ -45,9 +46,17 @@ public class WishListService {
     /**
      * 찜 목록 조회
      */
-    public List<Product> getWishList(Long userId) {
+    public List<WishListResponseDto> getWishList(Long userId) {
         return wishListRepository.findByUserId(userId).stream()
-                .map(w -> w.getProduct())
+                .map(w -> {
+                    Product p = w.getProduct();
+                    return new WishListResponseDto(
+                            p.getId(),
+                            p.getName(),
+                            p.getPrice(),
+                            p.getImageUrl()
+                    );
+                })
                 .toList();
     }
 

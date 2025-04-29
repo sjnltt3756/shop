@@ -1,5 +1,6 @@
 package com.shop.controller.wishlist;
 
+import com.shop.dto.wishlist.WishListResponseDto;
 import com.shop.entity.product.Product;
 import com.shop.security.JwtUtil;
 import com.shop.service.user.UserService;
@@ -36,7 +37,7 @@ public class WishListController {
      * 찜 목록 조회
      */
     @GetMapping
-    public ResponseEntity<List<Product>> getWishList(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<WishListResponseDto>> getMyWishList(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String username = JwtUtil.extractUsername(token);
         Long userId = userService.findIdByUsername(username);
