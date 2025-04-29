@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shop.entity.cart.Cart;
 import com.shop.entity.category.Category;
 import com.shop.entity.order.OrderItem;
+import com.shop.entity.review.Review;
 import com.shop.entity.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,6 +44,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore  // 순환 참조 방지
     private List<WishList> wishLists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     // 정적 팩토리 메서드
     public static Product create(String name, String description, int price, int stockQuantity, String imageUrl, Category category) {
