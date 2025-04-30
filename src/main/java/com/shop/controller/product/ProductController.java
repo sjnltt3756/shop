@@ -33,7 +33,7 @@ public class ProductController {
 
 
     /**
-     * 상품 검색 / 필터링
+     * 상품 검색 / 카테고리 필터링
      * @param name
      * @param categoryId
      */

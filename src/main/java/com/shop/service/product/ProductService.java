@@ -32,7 +32,7 @@ public class ProductService {
     }
 
     /**
-     * 상품 검색 / 필터링
+     * 상품 검색 / 카테고리 필터링
      */
     public List<ProductResponseDto> search(String name, Long categoryId) {
         return productRepository.searchProducts(name, categoryId).stream()
