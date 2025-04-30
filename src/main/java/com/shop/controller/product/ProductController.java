@@ -33,15 +33,16 @@ public class ProductController {
 
 
     /**
-     * 상품 검색 / 카테고리 필터링
-     * @param name
-     * @param categoryId
+     * 상품 검색 / 카테고리, 금액 필터링
      */
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResponseDto>> search(
+    public ResponseEntity<List<ProductResponseDto>> searchProducts(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Long categoryId
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) String sort
     ) {
-        return ResponseEntity.ok(productService.search(name, categoryId));
+        return ResponseEntity.ok(productService.searchProducts(name, categoryId, minPrice, maxPrice, sort));
     }
 }
