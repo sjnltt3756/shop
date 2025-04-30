@@ -31,6 +31,15 @@ public class ProductService {
         return toDto(findProduct(id));
     }
 
+    /**
+     * 상품 검색 / 필터링
+     */
+    public List<ProductResponseDto> search(String name, Long categoryId) {
+        return productRepository.searchProducts(name, categoryId).stream()
+                .map(this::toDto)
+                .toList();
+    }
+
     private ProductResponseDto toDto(Product product) {
         return new ProductResponseDto(
                 product.getId(),

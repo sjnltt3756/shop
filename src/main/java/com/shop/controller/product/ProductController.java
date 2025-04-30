@@ -30,4 +30,18 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.findById(id));
     }
+
+
+    /**
+     * 상품 검색 / 필터링
+     * @param name
+     * @param categoryId
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponseDto>> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Long categoryId
+    ) {
+        return ResponseEntity.ok(productService.search(name, categoryId));
+    }
 }
