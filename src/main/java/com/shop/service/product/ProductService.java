@@ -43,6 +43,26 @@ public class ProductService {
     }
 
     /**
+     * 인기 상품 조회(찜 순)
+     */
+    public List<ProductResponseDto> getPopularByWishList() {
+        List<Product> products = productRepository.findPopularByWishList();
+        return products.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    /**
+     * 인기 상품 조회(주문 많은 순)
+     */
+    public List<ProductResponseDto> getPopularByOrder() {
+        List<Product> products = productRepository.findPopularByOrder();
+        return products.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    /**
      * 상품 ID로 조회 (엔티티)
      */
     private Product findProductById(Long id) {

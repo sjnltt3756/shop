@@ -45,4 +45,20 @@ public class ProductController {
     ) {
         return ResponseEntity.ok(productService.searchProducts(name, categoryId, minPrice, maxPrice, sort));
     }
+
+    /**
+     * 인기 상품 조회 (찜 순)
+     */
+    @GetMapping("/popular/wishlist")
+    public ResponseEntity<List<ProductResponseDto>> getPopularByWishList() {
+        return ResponseEntity.ok(productService.getPopularByWishList());
+    }
+
+    /**
+     * 인기 상품 조회 (주문 많은 순)
+     */
+    @GetMapping("/popular/order")
+    public ResponseEntity<List<ProductResponseDto>> getPopularByOrder() {
+        return ResponseEntity.ok(productService.getPopularByOrder());
+    }
 }
