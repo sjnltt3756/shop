@@ -4,7 +4,9 @@ import com.shop.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +27,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    private String status; // 주문 상태 (예: 주문 완료, 배송 중, 완료 등)
+    private String status;
+    private int totalAmount;
 
-    private int totalAmount;  // 총 금액
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt; // 날짜 필드 추가
 
     private Order(User user, List<OrderItem> orderItems, String status, int totalAmount) {
         this.user = user;
