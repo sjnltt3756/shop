@@ -1,5 +1,6 @@
 package com.shop.exception;
 
+import com.shop.exception.coupon.CouponNotFoundException;
 import com.shop.exception.dto.ErrorResponse;
 import com.shop.exception.user.UserNotFoundException;
 import com.shop.exception.product.ProductNotFoundException;
@@ -53,10 +54,16 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", e.getMessage());
     }
 
+    @ExceptionHandler(CouponNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCouponNotFound(OrderNotFoundException e) {
+        return buildResponse(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", e.getMessage());
+    }
+
     @ExceptionHandler(OrderAccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleOrderAccessDenied(OrderAccessDeniedException e) {
         return buildResponse(HttpStatus.FORBIDDEN, "ORDER_ACCESS_DENIED", e.getMessage());
     }
+
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArg(IllegalArgumentException e) {
