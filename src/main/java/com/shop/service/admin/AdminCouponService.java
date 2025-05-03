@@ -3,9 +3,11 @@ package com.shop.service.admin;
 import com.shop.dto.coupon.CouponRequestDto;
 import com.shop.dto.coupon.CouponResponseDto;
 import com.shop.entity.coupon.Coupon;
+import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.user.User;
 import com.shop.exception.coupon.CouponNotFoundException;
 import com.shop.repository.coupon.CouponRepository;
+import com.shop.repository.coupon.UserCouponRepository;
 import com.shop.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class AdminCouponService {
 
     private final CouponRepository couponRepository;
     private final UserRepository userRepository;
+    private final UserCouponRepository userCouponRepository;
 
     /**
      * 쿠폰 생성
@@ -55,16 +58,15 @@ public class AdminCouponService {
     }
 
     public void issueCouponToAllUsers(Long couponId) {
-        // 쿠폰 찾기
         Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰입니다."));
+                .orElseThrow(() -> new CouponNotFoundException("존재하지 않는 쿠폰"));
 
-        // 모든 사용자에게 쿠폰 발급
         List<User> users = userRepository.findAll();
-        for (User user : users) {
-            coupon.assignUser(user);  // 쿠폰 발급
-        }
-        couponRepository.saveAll(users.stream().map(u -> coupon).collect(Collectors.toList()));
+        List<UserCoupon> issued = users.stream()
+                .map(user -> UserCoupon.create(user, coupon))
+                .collect(Collectors.toList());
+
+        userCouponRepository.saveAll(issued);
     }
 
     /**

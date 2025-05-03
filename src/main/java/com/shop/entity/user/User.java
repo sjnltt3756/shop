@@ -2,6 +2,7 @@ package com.shop.entity.user;
 
 import com.shop.entity.cart.Cart;
 import com.shop.entity.coupon.Coupon;
+import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.order.Order;
 import com.shop.entity.review.Review;
 import com.shop.entity.wishlist.WishList;
@@ -51,6 +52,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Coupon> coupons = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserCoupon> userCoupons = new ArrayList<>();
     /**
      * 기본 생성자 (정적 팩토리 메서드에서만 호출)
      */

@@ -7,11 +7,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class CouponResponseDto {
+public class UserCouponResponseDto {
+
     private Long id;
     private String name;
     private int discountAmount;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
-    private boolean enabled;
+    private boolean isUsed;  // 유저 사용여부 (사용하면 True)
 }
