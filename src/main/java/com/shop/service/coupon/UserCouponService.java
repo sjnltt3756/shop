@@ -51,6 +51,9 @@ public class UserCouponService {
         if (!userCoupon.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("다른 유저의 쿠폰입니다.");
         }
+        if (userCoupon.isUsed()){
+            throw new IllegalArgumentException("이미 사용한 쿠폰입니다.");
+        }
 
         userCoupon.use();
         userCouponRepository.save(userCoupon);
