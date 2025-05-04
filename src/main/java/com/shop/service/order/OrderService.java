@@ -1,13 +1,18 @@
 package com.shop.service.order;
 
 import com.shop.dto.order.*;
+import com.shop.entity.coupon.Coupon;
+import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.order.Order;
 import com.shop.entity.order.OrderItem;
 import com.shop.entity.product.Product;
 import com.shop.entity.user.User;
+import com.shop.exception.coupon.CouponNotFoundException;
 import com.shop.exception.order.OrderNotFoundException;
 import com.shop.exception.product.ProductNotFoundException;
 import com.shop.exception.user.UserNotFoundException;
+import com.shop.repository.coupon.CouponRepository;
+import com.shop.repository.coupon.UserCouponRepository;
 import com.shop.repository.order.OrderRepository;
 import com.shop.repository.product.ProductRepository;
 import com.shop.repository.user.UserRepository;
@@ -15,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,21 +31,54 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final UserCouponRepository userCouponRepository;
 
     /**
      * 주문 생성
      */
     @Transactional
     public Long createOrder(Long userId, OrderRequestDto dto) {
-        User user = findUser(userId);
-        List<OrderItem> orderItems = createOrderItems(dto);
-        int totalAmount = calculateTotal(orderItems);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
-        Order order = Order.create(user, orderItems, dto.getStatus(), totalAmount);
-        orderItems.forEach(orderItem -> orderItem.setOrder(order));
+        List<OrderItem> orderItems = createOrderItems(dto); // 주문 항목 생성
+        int totalPrice = calculateTotal(orderItems); // 총 금액 계산
+        int totalAmount = calculateTotalAmount(orderItems); // 총 상품 개수 계산
+
+        int finalPrice = totalPrice;
+
+        UserCoupon userCoupon = null;
+        if (dto.getUserCouponId() != null) {
+            userCoupon = userCouponRepository.findById(dto.getUserCouponId())
+                    .orElseThrow(() -> new RuntimeException("쿠폰이 존재하지 않습니다."));
+
+            if (!userCoupon.getUser().equals(user)) {
+                throw new RuntimeException("본인의 쿠폰만 사용 가능합니다.");
+            }
+
+            if (userCoupon.isUsed()) {
+                throw new RuntimeException("이미 사용된 쿠폰입니다.");
+            }
+
+            if (!userCoupon.getCoupon().isEnabled()) {
+                throw new RuntimeException("비활성화된 쿠폰입니다.");
+            }
+
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isBefore(userCoupon.getCoupon().getStartAt()) || now.isAfter(userCoupon.getCoupon().getEndAt())) {
+                throw new RuntimeException("쿠폰 유효기간이 아닙니다.");
+            }
+
+            // 쿠폰 할인 적용
+            int discountAmount = userCoupon.getCoupon().getDiscountAmount();
+            finalPrice = Math.max(0, totalPrice - discountAmount);
+            userCoupon.use();
+        }
+
+        // Order 생성
+        Order order = Order.create(user, orderItems, "ORDERED", totalAmount, totalPrice, finalPrice, userCoupon);
 
         Order savedOrder = orderRepository.save(order);
-        order.updateStatus("COMPLETE");
         return savedOrder.getId();
     }
 
@@ -48,11 +87,15 @@ public class OrderService {
      */
     @Transactional(readOnly = true)
     public OrderResponseDto findOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("존재하지 않는 주문입니다."));
-        return toDto(order);
+        try {
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new OrderNotFoundException("존재하지 않는 주문입니다."));
+            return toDto(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
-
     /**
      * 나의 주문 목록 조회
      */
@@ -114,6 +157,15 @@ public class OrderService {
     private int calculateTotal(List<OrderItem> orderItems) {
         return orderItems.stream()
                 .mapToInt(item -> item.getQuantity() * item.getPrice())
+                .sum();
+    }
+
+    /**
+     * 총 상품 개수 계산
+     */
+    private int calculateTotalAmount(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .mapToInt(OrderItem::getQuantity)
                 .sum();
     }
 

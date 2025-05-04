@@ -1,5 +1,7 @@
 package com.shop.entity.order;
 
+import com.shop.entity.coupon.Coupon;
+import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,25 +29,45 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_coupon_id")
+    private UserCoupon userCoupon; // 🔥 쿠폰 연관관계 추가
+
+    private int totalPrice;      // 할인 전
+    private int finalPrice;      // 할인 후
+
     private String status;
+
     private int totalAmount;
+
+
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // 날짜 필드 추가
 
-    private Order(User user, List<OrderItem> orderItems, String status, int totalAmount) {
+    private Order(User user, List<OrderItem> orderItems, String status, int totalAmount, int totalPrice, int finalPrice, UserCoupon userCoupon) {
         this.user = user;
         this.orderItems = orderItems;
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setOrder(this);
+        }
         this.status = status;
         this.totalAmount = totalAmount;
+        this.totalPrice = totalPrice;
+        this.finalPrice = finalPrice;
+        this.userCoupon = userCoupon;
     }
 
     public void updateStatus(String status) {
         this.status = status;
     }
 
-    public static Order create(User user, List<OrderItem> orderItems, String status, int totalAmount) {
-        return new Order(user, orderItems, status, totalAmount);
+    public static Order create(User user, List<OrderItem> orderItems, String status, int totalAmount, int totalPrice, int finalPrice, UserCoupon userCoupon) {
+        return new Order(user,orderItems,status,totalAmount,totalPrice,finalPrice,userCoupon);
+    }
+
+    public void applyDiscount(int discountAmount) {
+        this.finalPrice = Math.max(0, this.totalPrice - discountAmount);
     }
 }

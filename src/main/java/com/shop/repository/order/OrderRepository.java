@@ -35,4 +35,5 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     GROUP BY c.name
 """, nativeQuery = true)
     List<Object[]> getRevenueByCategory();
+
 }

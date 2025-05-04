@@ -13,4 +13,5 @@ public class OrderRequestDto {
     private final Long userId;
     private final List<OrderItemRequestDto> orderItems; // 주문 항목들
     private final String status; // 주문 상태
+    private final Long userCouponId;
 }
