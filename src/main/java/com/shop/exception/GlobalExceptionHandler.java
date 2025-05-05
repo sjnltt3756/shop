@@ -1,6 +1,9 @@
 package com.shop.exception;
 
+import com.shop.exception.coupon.CouponAlreadyUsedException;
+import com.shop.exception.coupon.CouponExpiredException;
 import com.shop.exception.coupon.CouponNotFoundException;
+import com.shop.exception.coupon.CouponNotOwnedException;
 import com.shop.exception.dto.ErrorResponse;
 import com.shop.exception.user.UserNotFoundException;
 import com.shop.exception.product.ProductNotFoundException;
@@ -56,7 +59,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CouponNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCouponNotFound(OrderNotFoundException e) {
-        return buildResponse(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND", e.getMessage());
+        return buildResponse(HttpStatus.NOT_FOUND, "COUPON_NOT_FOUND", e.getMessage());
+    }
+
+    @ExceptionHandler(CouponExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleCouponExpired(CouponExpiredException e) {
+        return buildResponse(HttpStatus.BAD_REQUEST,"COUPON_EXPIRED", e.getMessage());
+    }
+
+    @ExceptionHandler(CouponAlreadyUsedException.class)
+    public ResponseEntity<ErrorResponse> handleCouponAlreadyUsed(CouponAlreadyUsedException e) {
+        return buildResponse(HttpStatus.IM_USED,"COUPON_ALREADY_USED", e.getMessage());
+    }
+
+    @ExceptionHandler(CouponNotOwnedException.class)
+    public ResponseEntity<ErrorResponse> handleCouponNotOwned(CouponNotOwnedException e) {
+        return buildResponse(HttpStatus.BAD_REQUEST,"COUPON_NOT_OWNED", e.getMessage());
     }
 
     @ExceptionHandler(OrderAccessDeniedException.class)
