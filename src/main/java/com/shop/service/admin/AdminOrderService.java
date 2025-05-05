@@ -64,6 +64,8 @@ public class AdminOrderService {
                 order.getId(),
                 order.getStatus(),
                 order.getTotalAmount(),
+                order.getTotalPrice(),
+                order.getFinalPrice(),
                 itemDtos,
                 userId
         );

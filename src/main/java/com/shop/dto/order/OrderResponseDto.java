@@ -11,6 +11,8 @@ public class OrderResponseDto {
     private final Long id;
     private final String status;
     private final int totalAmount;
+    private final int totalPrice;
+    private final int finalPrice;
     private final List<OrderItemResponseDto> orderItems;
     private final Long userId;
 }

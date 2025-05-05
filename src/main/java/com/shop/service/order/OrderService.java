@@ -144,7 +144,7 @@ public class OrderService {
             Product product = productRepository.findById(itemDto.getProductId())
                     .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
 
-            OrderItem orderItem = OrderItem.create(null, product, itemDto.getQuantity(), itemDto.getPrice());
+            OrderItem orderItem = OrderItem.create(null, product, itemDto.getQuantity(), product.getPrice());
             orderItems.add(orderItem);
         }
 
@@ -156,7 +156,7 @@ public class OrderService {
      */
     private int calculateTotal(List<OrderItem> orderItems) {
         return orderItems.stream()
-                .mapToInt(item -> item.getQuantity() * item.getPrice())
+                .mapToInt(item -> item.getQuantity() * item.getProduct().getPrice())
                 .sum();
     }
 
@@ -185,6 +185,8 @@ public class OrderService {
                 order.getId(),
                 order.getStatus(),
                 order.getTotalAmount(),
+                order.getTotalPrice(),
+                order.getFinalPrice(),
                 itemDtos,
                 order.getUser().getId()
         );
