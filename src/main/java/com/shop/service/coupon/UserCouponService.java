@@ -5,7 +5,9 @@ import com.shop.dto.coupon.UserCouponResponseDto;
 import com.shop.entity.coupon.Coupon;
 import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.user.User;
+import com.shop.exception.coupon.CouponAlreadyUsedException;
 import com.shop.exception.coupon.CouponNotFoundException;
+import com.shop.exception.coupon.CouponNotOwnedException;
 import com.shop.repository.coupon.CouponRepository;
 import com.shop.repository.coupon.UserCouponRepository;
 import com.shop.repository.user.UserRepository;
@@ -49,10 +51,10 @@ public class UserCouponService {
                 .orElseThrow(() -> new CouponNotFoundException("쿠폰 없음"));
 
         if (!userCoupon.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("다른 유저의 쿠폰입니다.");
+            throw new CouponNotOwnedException("다른 유저의 쿠폰입니다.");
         }
         if (userCoupon.isUsed()){
-            throw new IllegalArgumentException("이미 사용한 쿠폰입니다.");
+            throw new CouponAlreadyUsedException("이미 사용한 쿠폰입니다.");
         }
 
         userCoupon.use();

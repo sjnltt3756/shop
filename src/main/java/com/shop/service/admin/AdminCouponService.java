@@ -59,7 +59,7 @@ public class AdminCouponService {
 
     public void issueCouponToAllUsers(Long couponId) {
         Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException("존재하지 않는 쿠폰"));
+                .orElseThrow(() -> new CouponNotFoundException("존재하지 않는 쿠폰입니다"));
 
         List<User> users = userRepository.findAll();
         List<UserCoupon> issued = users.stream()

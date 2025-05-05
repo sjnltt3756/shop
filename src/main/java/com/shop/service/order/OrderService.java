@@ -7,7 +7,10 @@ import com.shop.entity.order.Order;
 import com.shop.entity.order.OrderItem;
 import com.shop.entity.product.Product;
 import com.shop.entity.user.User;
+import com.shop.exception.coupon.CouponAlreadyUsedException;
+import com.shop.exception.coupon.CouponExpiredException;
 import com.shop.exception.coupon.CouponNotFoundException;
+import com.shop.exception.coupon.CouponNotOwnedException;
 import com.shop.exception.order.OrderNotFoundException;
 import com.shop.exception.product.ProductNotFoundException;
 import com.shop.exception.user.UserNotFoundException;
@@ -50,23 +53,23 @@ public class OrderService {
         UserCoupon userCoupon = null;
         if (dto.getUserCouponId() != null) {
             userCoupon = userCouponRepository.findById(dto.getUserCouponId())
-                    .orElseThrow(() -> new RuntimeException("쿠폰이 존재하지 않습니다."));
+                    .orElseThrow(() -> new CouponNotFoundException("쿠폰이 존재하지 않습니다."));
 
             if (!userCoupon.getUser().equals(user)) {
-                throw new RuntimeException("본인의 쿠폰만 사용 가능합니다.");
+                throw new CouponNotOwnedException("본인의 쿠폰만 사용 가능합니다.");
             }
 
             if (userCoupon.isUsed()) {
-                throw new RuntimeException("이미 사용된 쿠폰입니다.");
+                throw new CouponAlreadyUsedException("이미 사용된 쿠폰입니다.");
             }
 
             if (!userCoupon.getCoupon().isEnabled()) {
-                throw new RuntimeException("비활성화된 쿠폰입니다.");
+                throw new IllegalStateException("비활성화된 쿠폰입니다.");
             }
 
             LocalDateTime now = LocalDateTime.now();
             if (now.isBefore(userCoupon.getCoupon().getStartAt()) || now.isAfter(userCoupon.getCoupon().getEndAt())) {
-                throw new RuntimeException("쿠폰 유효기간이 아닙니다.");
+                throw new CouponExpiredException("쿠폰 유효기간이 아닙니다.");
             }
 
             // 쿠폰 할인 적용
