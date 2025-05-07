@@ -23,8 +23,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // 개발단계이므로 전체허용 중
-                        //.requestMatchers("/api/admin/**").hasRole("ADMIN") // 개발 완료시 이 코드로 변경
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
