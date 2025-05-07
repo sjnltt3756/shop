@@ -32,18 +32,13 @@
 ## 🛠 사용 기술
 
 ### 🔙 Backend
-- java 17
-- Spring Boot (3.4.4)
-- Spring Data JPA (Hibernate)
-- Spring Security
-- **데이터베이스**: MySQL
-- **보안**: JWT 인증
-- **주요 의존성**:
-    - Spring Boot Starter: `spring-boot-starter-data-jpa`, `spring-boot-starter-validation`, `spring-boot-starter-web`, `spring-boot-starter-security`
-    - JWT: `jjwt-api`, `jjwt-impl`, `jjwt-jackson`
-    - MySQL 커넥터: `mysql-connector-j`
-    - Lombok을 사용하여 Java 코드 간소화
-  
+![Java](https://img.shields.io/badge/Java-ED8B00?style=flat&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Security-6DB33F?style=flat&logo=spring&logoColor=white)
+![JPA](https://img.shields.io/badge/JPA-007396?style=flat&logo=hibernate&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-yellow?style=flat&logo=&logoColor=white)
+
 ---
 
 ## 📁 디렉토리 구조
