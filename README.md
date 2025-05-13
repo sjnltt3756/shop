@@ -106,6 +106,8 @@
 │   │       │            │   └── wishlist
 │   │       │            │       └── WishListResponseDto.class
 │   │       │            ├── entity
+│   │       │            │   ├── address
+│   │       │            │   │   └── Address.class
 │   │       │            │   ├── cart
 │   │       │            │   │   └── Cart.class
 │   │       │            │   ├── category
