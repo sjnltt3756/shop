@@ -1,5 +1,6 @@
 package com.shop.entity.user;
 
+import com.shop.entity.address.Address;
 import com.shop.entity.cart.Cart;
 import com.shop.entity.coupon.Coupon;
 import com.shop.entity.coupon.UserCoupon;
@@ -33,6 +34,9 @@ public class User {
     private String name;
     private String email;
 
+    @Embedded
+    private Address address;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role; // 기본값 제거 → 생성자/팩토리에서 직접 설정
@@ -57,35 +61,37 @@ public class User {
     /**
      * 기본 생성자 (정적 팩토리 메서드에서만 호출)
      */
-    private User(String username, String password, String name, String email, Role role) {
+    private User(String username, String password, String name, String email,Address address, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.address = address;
         this.role = role;
     }
 
     /**
      * 일반 사용자 생성
      */
-    public static User create(String username, String password, String name, String email) {
-        return new User(username, password, name, email, Role.USER);
+    public static User create(String username, String password, String name, String email, Address address) {
+        return new User(username, password, name, email,address, Role.USER);
     }
 
     /**
      * 관리자 사용자 생성
      */
     public static User createAdmin(String username, String password, String name, String email) {
-        return new User(username, password, name, email, Role.ADMIN);
+        return new User(username, password, name, email,null, Role.ADMIN);
     }
 
     /**
      * 사용자 정보 수정
      */
-    public void updateInfo(String password, String name, String email, String username) {
+    public void updateInfo(String password, String name, String email, String username, Address address) {
         this.password = password;
         this.name = name;
         this.email = email;
         this.username = username;
+        this.address = address;
     }
 }

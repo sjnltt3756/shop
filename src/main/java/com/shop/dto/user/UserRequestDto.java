@@ -1,5 +1,6 @@
 package com.shop.dto.user;
 
+import com.shop.entity.address.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,4 +13,12 @@ public class UserRequestDto {
     private final String password;
     private final String name;
     private final String email;
+
+    private String city;      // 🏙️
+    private String street;    // 🛣️
+    private String zipcode;   // 🏷️
+
+    public Address toAddress() {
+        return new Address(city, street, zipcode);
+    }
 }

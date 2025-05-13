@@ -3,6 +3,8 @@ package com.shop.service.user;
 import com.shop.dto.user.LoginRequestDto;
 import com.shop.dto.user.UserRequestDto;
 import com.shop.dto.user.UserResponseDto;
+import com.shop.entity.address.Address;
+import com.shop.entity.user.Role;
 import com.shop.entity.user.User;
 import com.shop.exception.user.UserNotFoundException;
 import com.shop.repository.user.UserRepository;
@@ -26,11 +28,13 @@ public class UserService {
      */
     public Long register(UserRequestDto dto) {
         validateDuplicateUsername(dto.getUsername());
+        Address address = dto.toAddress();
         User user = User.create(
                 dto.getUsername(),
                 encodePassword(dto.getPassword()),
                 dto.getName(),
-                dto.getEmail()
+                dto.getEmail(),
+                address
         );
         return userRepository.save(user).getId();
     }
@@ -85,7 +89,7 @@ public class UserService {
     @Transactional
     public UserResponseDto update(Long id, UserRequestDto dto) {
         User user = findUserById(id);
-
+        Address address = dto.toAddress();
         userRepository.findByUsername(dto.getUsername())
                 .filter(existing -> !existing.getId().equals(id))
                 .ifPresent(existing -> {
@@ -96,7 +100,8 @@ public class UserService {
                 encodePassword(dto.getPassword()),
                 dto.getName(),
                 dto.getEmail(),
-                dto.getUsername()
+                dto.getUsername(),
+                address
         );
 
         return toDto(user);
@@ -163,11 +168,14 @@ public class UserService {
      * User → UserResponseDto 변환
      */
     private UserResponseDto toDto(User user) {
+        Address address = user.getRole() == Role.USER ? user.getAddress() : null;
+
         return new UserResponseDto(
                 user.getId(),
                 user.getUsername(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                address
         );
     }
 }

@@ -1,5 +1,6 @@
 package com.shop.dto.user;
 
+import com.shop.entity.address.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,4 +11,5 @@ public class UserResponseDto {
     private final String username;
     private final String name;
     private final String email;
+    private final Address address;
 }

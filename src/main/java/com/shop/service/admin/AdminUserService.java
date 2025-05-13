@@ -22,7 +22,8 @@ public class AdminUserService {
                         user.getId(),
                         user.getUsername(),
                         user.getName(),
-                        user.getEmail()
+                        user.getEmail(),
+                        user.getAddress()
                 )).toList();
     }
 
