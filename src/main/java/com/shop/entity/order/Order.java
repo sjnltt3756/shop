@@ -1,6 +1,6 @@
 package com.shop.entity.order;
 
-import com.shop.entity.coupon.Coupon;
+import com.shop.entity.address.Address;
 import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.user.User;
 import jakarta.persistence.*;
@@ -40,13 +40,14 @@ public class Order {
 
     private int totalAmount;
 
-
+    @Embedded
+    private Address address;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // 날짜 필드 추가
 
-    private Order(User user, List<OrderItem> orderItems, String status, int totalAmount, int totalPrice, int finalPrice, UserCoupon userCoupon) {
+    private Order(User user, List<OrderItem> orderItems, String status, int totalAmount, int totalPrice, int finalPrice, UserCoupon userCoupon, Address address) {
         this.user = user;
         this.orderItems = orderItems;
         for (OrderItem orderItem : orderItems) {
@@ -57,14 +58,15 @@ public class Order {
         this.totalPrice = totalPrice;
         this.finalPrice = finalPrice;
         this.userCoupon = userCoupon;
+        this.address = address;
     }
 
     public void updateStatus(String status) {
         this.status = status;
     }
 
-    public static Order create(User user, List<OrderItem> orderItems, String status, int totalAmount, int totalPrice, int finalPrice, UserCoupon userCoupon) {
-        return new Order(user,orderItems,status,totalAmount,totalPrice,finalPrice,userCoupon);
+    public static Order create(User user, List<OrderItem> orderItems, String status, int totalAmount, int totalPrice, int finalPrice, UserCoupon userCoupon, Address address) {
+        return new Order(user,orderItems,status,totalAmount,totalPrice,finalPrice,userCoupon,address);
     }
 
     public void applyDiscount(int discountAmount) {

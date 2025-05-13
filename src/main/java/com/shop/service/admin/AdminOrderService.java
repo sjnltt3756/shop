@@ -28,7 +28,7 @@ public class AdminOrderService {
                     .map(this::toDto)
                     .toList();
         } catch (Exception e) {
-            System.out.println("getAllOrders 예외 발생!");
+            System.out.println("getAllOrders 예외 발생");
             e.printStackTrace(); // 콘솔에 스택트레이스 출력
             throw e; // 예외 다시 던지기 (원하는 경우)
         }
@@ -67,7 +67,8 @@ public class AdminOrderService {
                 order.getTotalPrice(),
                 order.getFinalPrice(),
                 itemDtos,
-                userId
+                userId,
+                order.getAddress()
         );
     }
 }

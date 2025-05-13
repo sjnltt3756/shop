@@ -1,7 +1,10 @@
 package com.shop.service.order;
 
-import com.shop.dto.order.*;
-import com.shop.entity.coupon.Coupon;
+import com.shop.dto.order.OrderItemRequestDto;
+import com.shop.dto.order.OrderItemResponseDto;
+import com.shop.dto.order.OrderRequestDto;
+import com.shop.dto.order.OrderResponseDto;
+import com.shop.entity.address.Address;
 import com.shop.entity.coupon.UserCoupon;
 import com.shop.entity.order.Order;
 import com.shop.entity.order.OrderItem;
@@ -14,7 +17,6 @@ import com.shop.exception.coupon.CouponNotOwnedException;
 import com.shop.exception.order.OrderNotFoundException;
 import com.shop.exception.product.ProductNotFoundException;
 import com.shop.exception.user.UserNotFoundException;
-import com.shop.repository.coupon.CouponRepository;
 import com.shop.repository.coupon.UserCouponRepository;
 import com.shop.repository.order.OrderRepository;
 import com.shop.repository.product.ProductRepository;
@@ -78,8 +80,13 @@ public class OrderService {
             userCoupon.use();
         }
 
+        Address address = user.getAddress();
+        if (address == null) {
+            throw new IllegalArgumentException("회원 정보에 주소가 없습니다. 주소를 등록해주세요.");
+        }
+
         // Order 생성
-        Order order = Order.create(user, orderItems, "ORDERED", totalAmount, totalPrice, finalPrice, userCoupon);
+        Order order = Order.create(user, orderItems, "ORDERED", totalAmount, totalPrice, finalPrice, userCoupon, address);
 
         Order savedOrder = orderRepository.save(order);
         return savedOrder.getId();
@@ -191,7 +198,8 @@ public class OrderService {
                 order.getTotalPrice(),
                 order.getFinalPrice(),
                 itemDtos,
-                order.getUser().getId()
+                order.getUser().getId(),
+                order.getAddress()
         );
     }
 }

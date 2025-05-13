@@ -1,5 +1,6 @@
 package com.shop.dto.order;
 
+import com.shop.entity.address.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,4 +16,5 @@ public class OrderResponseDto {
     private final int finalPrice;
     private final List<OrderItemResponseDto> orderItems;
     private final Long userId;
+    private Address address;
 }
